@@ -1,7 +1,8 @@
 plugins {
-    id 'fabric-loom' version '1.11.8'
+    id 'fabric-loom' version '1.10.15'
     id 'maven-publish'
 }
+
 version = project.mod_version
 group = project.maven_group
 
@@ -48,3 +49,4 @@ jar {
         rename { "${it}_${project.archives_base_name}" }
     }
 }
+
