@@ -18,8 +18,11 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.16.0",
-    "minecraft": ">=26.3",
+    "fabricloader": ">=0.16.14",
+    "minecraft": "1.21.1",
     "fabric": "*"
+  },
+  "recommends": {
+    "modmenu": "*"
   }
 }
