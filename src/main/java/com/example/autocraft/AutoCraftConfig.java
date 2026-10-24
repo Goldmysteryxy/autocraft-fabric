@@ -24,6 +24,9 @@ public class AutoCraftConfig {
         STATE.clear();
 
         if (Files.notExists(CONFIG_PATH)) {
+            for (String recipeId : AutoCraftRecipes.ALL.stream().map(AutoCraftRecipe::id).toList()) {
+                STATE.put(recipeId, true);
+            }
             save();
             return;
         }
@@ -49,7 +52,7 @@ public class AutoCraftConfig {
     }
 
     public static boolean isEnabled(String recipeId) {
-        return STATE.getOrDefault(recipeId, false);
+        return STATE.getOrDefault(recipeId, true);
     }
 
     public static void setEnabled(String recipeId, boolean enabled) {
