@@ -1,36 +1,51 @@
-name: Build Fabric mod
+plugins {
+    id 'fabric-loom' version '1.18.2'
+    id 'maven-publish'
+}
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-  workflow_dispatch:
+version = project.mod_version
+group = project.maven_group
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+base {
+    archivesName = project.archives_base_name
+}
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+repositories {
+    mavenCentral()
+    maven {
+        name = "Terraformers"
+        url = "https://terraformersmc.com"
+    }
+}
 
-      - name: Set up JDK 21 to run Gradle
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-      - name: Set up Gradle 8.12.1 Environment
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.12.1'
+    modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
+}
 
-      - name: Build mod jar
-        run: gradle build --no-daemon --stacktrace
+processResources {
+    inputs.property "version", project.version
 
-      - name: Upload jar artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: autocraft-jar
-          path: build/libs/*.jar
-          
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 25
+}
+
+java {
+    withSourcesJar()
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archives_base_name}" }
+    }
+}
