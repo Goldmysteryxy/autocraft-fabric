@@ -1,6 +1,6 @@
 plugins {
-    id "fabric-loom" version "1.10.5"
-    id "maven-publish"
+    id 'fabric-loom' version '1.11.0'
+    id 'maven-publish'
 }
 
 version = project.mod_version
@@ -11,6 +11,7 @@ base {
 }
 
 repositories {
+    mavenCentral()
     maven {
         name = "Terraformers"
         url = "https://terraformersmc.com"
@@ -33,10 +34,17 @@ processResources {
         expand "version": project.version
     }
 }
+
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 21
+    it.options.release = 25
 }
 
 java {
     withSourcesJar()
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
 }
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
