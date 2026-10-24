@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "autocraft",
+  "version": "${version}",
+  "name": "AutoCraft",
+  "description": "Automatically crafts selected items from your inventory, configured in Mod Menu.",
+  "authors": [
+    "YourName"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.example.autocraft.AutoCraftMod"
+    ],
+    "modmenu": [
+      "com.example.autocraft.AutoCraftModMenuIntegration"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": ">=26.3",
+    "fabric": "*"
+  }
+}
