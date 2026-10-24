@@ -23,8 +23,8 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Generate missing Gradle wrapper
-        run: gradle wrapper
+      - name: Generate Java 25 Compatible Gradle Wrapper
+        run: gradle wrapper --gradle-version 9.1.0
 
       - name: Build mod jar
         run: ./gradlew build --no-daemon --stacktrace
