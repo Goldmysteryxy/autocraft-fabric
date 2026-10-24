@@ -33,7 +33,6 @@ processResources {
         expand "version": project.version
     }
 }
-
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 21
 }
