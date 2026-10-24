@@ -14,16 +14,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 25
+      - name: Set up JDK 21 to run Gradle
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '25'
+          java-version: '21'
 
-      - name: Set up Gradle 9.1.0 Environment
+      - name: Set up Gradle 8.12.1 Environment
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '9.1.0'
+          gradle-version: '8.12.1'
 
       - name: Build mod jar
         run: gradle build --no-daemon --stacktrace
@@ -33,3 +33,4 @@ jobs:
         with:
           name: autocraft-jar
           path: build/libs/*.jar
+          
