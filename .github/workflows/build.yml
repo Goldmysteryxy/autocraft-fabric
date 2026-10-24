@@ -20,10 +20,10 @@ jobs:
           distribution: temurin
           java-version: '25'
 
-      - name: Set up Gradle 9.2 Environment
+      - name: Set up Gradle 9.0 Environment
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '9.2'
+          gradle-version: '9.0'
 
       - name: Build mod jar
         run: gradle build --no-daemon --stacktrace
@@ -33,3 +33,4 @@ jobs:
         with:
           name: autocraft-jar
           path: build/libs/*.jar
+          
