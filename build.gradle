@@ -1,4 +1,4 @@
-plugins {
+pluplugins {
     id 'fabric-loom' version '1.11.0'
     id 'maven-publish'
 }
@@ -46,5 +46,6 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+        rename { "${it}_${project.archives_base_name}" }
     }
+}
