@@ -24,6 +24,14 @@ public class AutoCraftCommand {
                     .then(CommandManager.argument("selector", StringArgumentType.word())
                         .suggests(AutoCraftCommand::suggestRecipes)
                         .executes(ctx -> toggleRecipe(ctx, ctx.getArgument("selector", String)))))
+                .then(CommandManager.literal("all")
+                    .then(CommandManager.argument("state", StringArgumentType.word())
+                        .suggests((ctx, builder) -> {
+                            builder.suggest("on");
+                            builder.suggest("off");
+                            return builder.buildFuture();
+                        })
+                        .executes(ctx -> setStateForAll(ctx, ctx.getArgument("state", String)))))
                 .then(CommandManager.argument("selector", StringArgumentType.word())
                     .suggests(AutoCraftCommand::suggestRecipes)
                     .executes(ctx -> showStatusForSelector(ctx, ctx.getArgument("selector", String)))
@@ -85,7 +93,7 @@ public class AutoCraftCommand {
         }
 
         String stateText = matches.size() == 1
-            ? (AutoCraftConfig.isEnabled(matches.getFirst().id()) ? "ON" : "OFF")
+            ? (AutoCraftConfig.isEnabled(matches.get(0).id()) ? "ON" : "OFF")
             : "toggled";
 
         ctx.getSource().sendFeedback(() -> Text.literal(
@@ -106,7 +114,7 @@ public class AutoCraftCommand {
             case "off", "false", "disabled" -> false;
             default -> {
                 ctx.getSource().sendError(Text.literal("State must be 'on' or 'off'."));
-                yield AutoCraftConfig.isEnabled(matches.getFirst().id());
+                yield AutoCraftConfig.isEnabled(matches.get(0).id());
             }
         };
 
@@ -120,10 +128,32 @@ public class AutoCraftCommand {
         return matches.size();
     }
 
+    private static int setStateForAll(CommandContext<ServerCommandSource> ctx, String state) {
+        boolean enabled = switch (state.toLowerCase(Locale.ROOT)) {
+            case "on", "true", "enabled" -> true;
+            case "off", "false", "disabled" -> false;
+            default -> {
+                ctx.getSource().sendError(Text.literal("State must be 'on' or 'off'."));
+                yield true;
+            }
+        };
+
+        for (AutoCraftRecipe recipe : AutoCraftRecipes.ALL) {
+            AutoCraftConfig.setEnabled(recipe.id(), enabled);
+        }
+
+        ctx.getSource().sendFeedback(() -> Text.literal("AutoCraft is now set to " + (enabled ? "ON" : "OFF") + " for all recipes."), false);
+        return AutoCraftRecipes.ALL.size();
+    }
+
     private static List<AutoCraftRecipe> findMatchingRecipes(String selector) {
         String search = selector.toLowerCase(Locale.ROOT).trim();
         if (search.isEmpty()) {
             return new ArrayList<>();
+        }
+
+        if (search.equals("all") || search.equals("everything")) {
+            return new ArrayList<>(AutoCraftRecipes.ALL);
         }
 
         List<AutoCraftRecipe> matches = new ArrayList<>();
@@ -138,6 +168,7 @@ public class AutoCraftCommand {
     }
 
     private static CompletableFuture<Suggestions> suggestRecipes(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
+        builder.suggest("all");
         for (AutoCraftRecipe recipe : AutoCraftRecipes.ALL) {
             builder.suggest(recipe.id());
             builder.suggest(recipe.label());
