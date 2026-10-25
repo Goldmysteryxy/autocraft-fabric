@@ -19,7 +19,6 @@ public class AutoCraftManager {
             return;
         }
 
-        ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
         PlayerInventory inventory = player.getInventory();
 
         boolean changed;
