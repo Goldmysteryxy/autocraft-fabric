@@ -1,5 +1,5 @@
 plugins {
-    id 'net.fabricmc.fabric-loom' version '1.19.3'
+    id 'fabric-loom' version '1.11.6'
     id 'maven-publish'
 }
 
@@ -19,12 +19,12 @@ repositories {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:26.3"
-    mappings loom.officialMojangMappings()
-    
-    modImplementation "net.fabricmc:fabric-loader:0.19.5"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:0.165.0+26.3"
-    modImplementation "com.terraformersmc:modmenu:13.0.0+26.3"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 }
 
 processResources {
@@ -38,12 +38,12 @@ processResources {
 java {
     withSourcesJar()
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.release = 25
+    options.compilerArgs.addAll(['--release', '21'])
 }
 
 jar {
